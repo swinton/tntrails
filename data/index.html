@@ -26,6 +26,15 @@
   // Initialize the map
   const map = L.map('map').setView([35.8, -86], 8); // Adjust center/zoom as needed
 
+    // Define the bounding box as southwest and northeast corners
+  var bounds = L.latLngBounds(
+    [35.403643645658, -85.7007558896214], // Southwest
+    [35.4783543541948, -85.5392225741364]  // Northeast
+  );
+
+  // Fit the map to the bounding box
+  map.fitBounds(bounds);
+
   // Add a basemap (OpenStreetMap)
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
