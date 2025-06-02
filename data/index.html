@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Public Trails Map</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <style>
+    #map {
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<!-- Load the GeoJSON -->
+<script>
+  // Initialize the map
+  const map = L.map('map').setView([35.8, -86], 8); // Adjust center/zoom as needed
+
+  // Add a basemap (OpenStreetMap)
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  // Load and display the GeoJSON
+  fetch('TDEC_Public_Trails.geojson')
+    .then(response => response.json())
+    .then(data => {
+      const trailsLayer = L.geoJSON(data, {
+        style: {
+          color: 'green',
+          weight: 2
+        },
+        onEachFeature: (feature, layer) => {
+          if (feature.properties && feature.properties.name) {
+            layer.bindPopup(feature.properties.name);
+          }
+        }
+      }).addTo(map);
+
+      map.fitBounds(trailsLayer.getBounds());
+    })
+    .catch(err => console.error('Error loading GeoJSON:', err));
+</script>
+
+</body>
+</html>
+
