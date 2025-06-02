@@ -32,7 +32,7 @@
   }).addTo(map);
 
   // Load and display the GeoJSON
-  fetch('TDEC_Public_Trails.geojson')
+  fetch('TSP-0252.geojson')
     .then(response => response.json())
     .then(data => {
       const trailsLayer = L.geoJSON(data, {
