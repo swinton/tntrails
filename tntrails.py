@@ -13,8 +13,13 @@ OUTPUT_WIDTH, OUTPUT_HEIGHT = 7200, 10800
 TRAILS_FILE = 'data/TSP-0252.geojson'
 
 # Bounding box (Savage Gulf example)
-min_lon, min_lat = -85.7007558896214, 35.403643645658
-max_lon, max_lat = -85.5392225741364, 35.4783543541948
+# Note, modified to fit 3:2 aspect ratio with landscape orientation
+min_lon = -85.7007558896214
+max_lon = -85.5392225741364
+min_lat = 35.3872
+max_lat = 35.4948
+# min_lon, min_lat = -85.7007558896214, 35.403643645658
+# max_lon, max_lat = -85.5392225741364, 35.4783543541948
 # min_lon, min_lat = -85.8, 35.4
 # max_lon, max_lat = -85.7, 35.46
 
