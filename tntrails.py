@@ -20,7 +20,7 @@ min_lon, min_lat = -85.7007558896214, 35.3872
 max_lon, max_lat = -85.5392225741364, 35.4948
 
 # ---------------------------
-# TILE STITCHING
+# TILE STITCHING + TERRAIN LINES
 # ---------------------------
 tiles = list(mercantile.tiles(min_lon, min_lat, max_lon, max_lat, ZOOM))
 tile_xs = sorted(set(t.x for t in tiles))
@@ -30,13 +30,27 @@ img_width = len(tile_xs) * TILE_SIZE
 img_height = len(tile_ys) * TILE_SIZE
 base_img = Image.new("RGB", (img_width, img_height))
 
-print(f"Downloading {len(tiles)} tiles...")
+print(f"Downloading {len(tiles)} terrain tiles with contours...")
 
 for tile in tiles:
-    url = f"https://tiles.stadiamaps.com/tiles/stamen_terrain/{ZOOM}/{tile.x}/{tile.y}.jpg?api_key={STADIA_API_KEY}"
-    r = requests.get(url, stream=True)
-    if r.status_code == 200:
-        tile_img = Image.open(r.raw)
+    # Base terrain tile
+    terrain_url = f"https://tiles.stadiamaps.com/tiles/osm_bright/{ZOOM}/{tile.x}/{tile.y}.jpg?api_key={STADIA_API_KEY}"
+    r1 = requests.get(terrain_url, stream=True)
+
+    # Contour (terrain-lines) tile
+    contour_url = f"https://tiles.stadiamaps.com/tiles/terrain-lines/{ZOOM}/{tile.x}/{tile.y}.png?api_key={STADIA_API_KEY}"
+    r2 = requests.get(contour_url, stream=True)
+
+    if r1.status_code == 200:
+        tile_img = Image.open(r1.raw).convert("RGBA")
+
+        # If contour tile loads, composite on top
+        if r2.status_code == 200:
+            contour_img = Image.open(r2.raw).convert("RGBA")
+            tile_img = Image.alpha_composite(tile_img, contour_img)
+
+        tile_img = tile_img.convert("RGB")  # Convert back for paste
+
         x_offset = tile_xs.index(tile.x) * TILE_SIZE
         y_offset = tile_ys.index(tile.y) * TILE_SIZE
         base_img.paste(tile_img, (x_offset, y_offset))

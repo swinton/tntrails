@@ -14,3 +14,9 @@ poetry run python ./get_bbox.py data/TSP-0252.geojson
 ```shell
 poetry run python ./tntrails.py
 ```
+
+### Generate SVG
+
+```shell
+poetry run python ./svg.py
+```
